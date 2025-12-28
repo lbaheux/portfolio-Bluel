@@ -52,6 +52,9 @@ body {
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+
+	display: flex;
+	flex-direction: column;
 }
 header {
 	display: flex;
@@ -183,11 +186,33 @@ input[type="submit"]{
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
-	margin: 2em
+	margin: 2em;
 }
 
 /* Fin de la base de code */
+a {
+	color: inherit;
+	text-decoration: none;
+}
 
+a:visited {
+	color: inherit;
+}
+
+nav a {
+	font-size: 16px;
+}
+
+nav a.nav-active {
+	font-weight: 600;
+	color: black;
+}
+
+header img {
+	width: 22px;
+	height: 22px;
+}
+/* Filtres */
 .filters {
 	display: flex;
 	justify-content: center;
@@ -213,4 +238,56 @@ footer nav ul {
 .filters button.is-active {
 	background: #1D6154;
 	color: white;
+}
+
+/* Page login */
+.login {
+	width:50%;
+	margin: 150px auto 200px auto;
+	text-align: center;
+}
+
+.login form {
+	display: flex;
+	flex-direction: column;
+	text-align: left;
+}
+
+.login label {
+	margin: 30px 0 10px 0;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.login input {
+	height: 60px;
+	font-size: 14px;
+	padding: 0 16px;
+	border: None;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+.login button {
+	font-family: "Syne";
+	font-weight: bold;
+	font-size: 14px;
+	background-color:#1D6154;
+	color: white;
+	border: None;
+	border-radius: 60px;
+	padding: 0px 30px;
+	cursor: pointer;
+
+	width: 180px;
+	height: 36px;
+	margin: 32px auto 0px;
+
+}
+
+.forgot-password {
+	display: inline-block;
+	margin-top: 24px;
+	color: #3d3d3d;
+	text-decoration: underline;
+	font-size: 14px;
 }
