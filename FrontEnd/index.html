@@ -8,6 +8,9 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="./assets/style.css">
 	<script type = "module" src="./assets/main.js"></script>
 </head>
@@ -18,7 +21,7 @@
 		<ul>
 			<li>projets</li>
 			<li>contact</li>
-			<li>login</li>
+			<li><a id= "login-link" href="./login.html">login</a></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
@@ -36,57 +39,15 @@
 		</article>
 	</section>
 	<section id="portfolio">
+		<div class="portfolio-top">
 		<h2>Mes Projets</h2>
+		<button class="edit-button" type="button">
+			<i class="fa-regular fa-pen-to-square"></i>
+			modifier </button>
+		</div>
 
 		<div class="filters"></div>
-		<div class="gallery">
-			<!-- 
-			<figure>
-				<img src="assets/images/abajour-tahina.png" alt="Abajour Tahina">
-				<figcaption>Abajour Tahina</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-v.png" alt="Appartement Paris V">
-				<figcaption>Appartement Paris V</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/restaurant-sushisen-londres.png" alt="Restaurant Sushisen - Londres">
-				<figcaption>Restaurant Sushisen - Londres</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/la-balisiere.png" alt="Villa “La Balisiere” - Port Louis">
-				<figcaption>Villa “La Balisiere” - Port Louis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/structures-thermopolis.png" alt="Structures Thermopolis">
-				<figcaption>Structures Thermopolis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-x.png" alt="Appartement Paris X">
-				<figcaption>Appartement Paris X</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/le-coteau-cassis.png" alt="Pavillon “Le coteau” - Cassis">
-				<figcaption>Pavillon “Le coteau” - Cassis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/villa-ferneze.png" alt="Villa Ferneze - Isola d’Elba">
-				<figcaption>Villa Ferneze - Isola d’Elba</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-xviii.png" alt="Appartement Paris XVIII">
-				<figcaption>Appartement Paris XVIII</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/bar-lullaby-paris.png" alt="Bar “Lullaby” - Paris">
-				<figcaption>Bar “Lullaby” - Paris</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/hotel-first-arte-new-delhi.png" alt="Hotel First Arte - New Delhi">
-				<figcaption>Hotel First Arte - New Delhi</figcaption>
-			</figure> 
-			-->
-		</div>
+		<div class="gallery"></div>
 	</section>
 	<section id="contact">
 		<h2>Contact</h2>
@@ -110,5 +71,59 @@
 		</ul>
 	</nav>
 </footer>
+
+<!-- Modale -->
+<aside id="modale" class="modale-overlay">
+	<div class="modale">
+		<div class="modale-header">
+			<button type="button" class="modale-back" hidden>
+				<i class="fa-solid fa-arrow-left"></i>
+			</button>
+
+			<button type="button" class="modale-close">
+				<i class="fa-solid fa-xmark"></i>
+			</button>
+		</div>
+
+		<!-- Vue Galerie -->
+		<section class="modale-view" id="modale-view-gallery">
+			<h3 id="modale-title" class="modale-title">Galerie photo</h3>
+			
+			<div class="modale-gallery"></div>
+			<div class="modale-separator"></div>
+
+			<button type="button" class="main-button" id="open-add-photo">
+				Ajouter une photo</button>
+		</section>
+
+		<!-- Vue ajout photo -->
+		<section class="modale-view" id="modale-view-add-photo" hidden>
+			<h3 class="modale-title">Ajout photo</h3>
+
+			<form class="modale-form">
+				<div class="upload-box">
+					<div class="upload-icon">
+						<i class="fa-regular fa-image"></i>
+					</div>
+
+					<button type="button" class="button-upload" disabled>+ Ajouter photo</button>
+					<p class="upload-info">jpg, png : 4mo max</p>
+				</div>
+
+				<label for="project-title">Titre</label>
+				<input id="project-title" type="text">
+
+				<label for="project-category">Catégorie</label>
+				<select id="project-category">
+					<option value="">-</option>
+				</select>
+
+				<div class="modale-separator"></div>
+
+				<button type="submit" class="main-button" disabled>Valider</button>
+			</form>
+		</section>
+	</div>
+</aside>
 </body>
 </html>

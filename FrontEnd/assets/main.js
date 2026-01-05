@@ -10,6 +10,7 @@ async function fetchCategories() {
 }
 
 let allProjects = [];
+let allCategories = [];
 
 // Affichage de la galerie de projets
 function renderGallery (projects) {
@@ -86,9 +87,213 @@ function renderFilters(categories) {
     });
 }
 
+// Mode Édition 
+function setLoginLink() {
+    const loginLink = document.querySelector("#login-link");
+    const token = localStorage.getItem("token");
+
+    // Non connecté
+    if (!token) {
+        loginLink.textContent = "login";
+        loginLink.setAttribute("href", "./login.html");
+        return;
+    }
+
+    // Connecté
+    loginLink.textContent = "logout";
+    loginLink.setAttribute("href", "#");
+
+    loginLink.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        localStorage.removeItem("token");
+        window.location.href = "./index.html";
+    });
+}
+
+function applyLoggedInLayout () {
+    const isLoggedIn = Boolean(localStorage.getItem("token"));
+    setLoginLink();
+
+    const filters = document.querySelector(".filters");
+    const editButton = document.querySelector(".edit-button");
+    
+    if (isLoggedIn) {
+        filters.style.display = "none";
+        editButton.style.display = "inline-flex";
+
+        // Bannière en haut de la page
+        const banner = document.createElement("div");
+        banner.className = "edit-banner";
+        banner.textContent = "Mode édition";
+        document.body.prepend(banner);
+
+    } else {
+        filters.style.display = "flex";
+        editButton.style.display = "none";
+    }
+}
+
+// Modale
+function renderModaleGallery(projects) {
+    const grid = document.querySelector(".modale-gallery")
+
+    grid.innerHTML = "";
+    for (let i = 0; i < projects.length; i++) {
+        const project = projects[i];
+
+        const figure = document.createElement("figure");
+        figure.classList.add("modal-thumb");
+        figure.dataset.projectId = project.id;
+
+        const img = document.createElement("img");
+        img.src = project.imageUrl;
+        img.alt = project.title;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.classList.add("thumb-trash");
+
+        const icon = document.createElement("i");
+        icon.classList.add("fa-solid", "fa-trash-can");
+
+        button.appendChild(icon);
+        figure.appendChild(img);
+        figure.appendChild(button);
+        grid.appendChild(figure);
+    }
+}
+
+function renderModaleCategories(categories) {
+    const select = document.querySelector("#project-category");
+    select.innerHTML = "";
+
+    for (let i = 0; i < categories.length; i++) {
+        const category = categories[i];
+
+        const option = document.createElement("option");
+        option.value = category.id;
+        option.textContent = category.name;
+
+        select.appendChild(option);
+    }
+}
+
+// Suppression de projet
+async function deleteProject(projectId) {
+    const token = localStorage.getItem("token");
+    
+    const reponse = await fetch(`http://localhost:5678/api/works/${projectId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+}
+
+function setupModaleDelete() {
+    const grid = document.querySelector(".modale-gallery");
+
+    grid.addEventListener("click", async function (e) {
+        if (!e.target.classList.contains("fa-trash-can") && !e.target.classList.contains("thumb-trash")){
+            return;
+        }
+        
+        let deleteButton;
+        if (e.target.classList.contains("thumb-trash")) {
+            deleteButton = e.target;
+        }
+        else {
+            deleteButton = e.target.parentElement;
+        }
+
+        const figure = deleteButton.parentElement;
+        const projectId = figure.dataset.projectId;
+
+        // Suppression coté API
+        await deleteProject(projectId);
+
+        // Suppression dans le tableau
+        for (let i = 0; i <allProjects.length; i++) {
+            if (allProjects[i].id == projectId) {
+                allProjects.splice(i, 1);
+                break;
+            }
+        }
+
+        figure.remove();
+        renderGallery(allProjects);
+    });
+}
+
+function setupModale() {
+    const token = localStorage.getItem("token");
+
+    const overlay = document.querySelector("#modale");
+    const openButton = document.querySelector(".edit-button");
+    const closeButton = document.querySelector(".modale-close");
+    const backButton = document.querySelector(".modale-back");
+    const addPhotoButton = document.querySelector("#open-add-photo");
+    const viewGallery = document.querySelector("#modale-view-gallery");
+    const viewAddPhoto = document.querySelector("#modale-view-add-photo");
+
+    // Clic sur "modifier"
+    openButton.addEventListener("click", (e) => {
+        renderModaleGallery(allProjects);
+        renderModaleCategories(allCategories);
+
+        overlay.classList.add("is-open");
+        
+        viewGallery.hidden = false;
+        viewAddPhoto.hidden = true;
+        backButton.hidden = true;
+    });
+
+    // Clic sur la croix
+    closeButton.addEventListener("click", (e) => {
+        overlay.classList.remove("is-open");
+    });
+
+    // Clic sur l'overlay pour fermer
+    overlay.addEventListener("click", (e) => {
+        if (e.target == overlay) {
+            overlay.classList.remove("is-open");
+        }
+    });
+
+    // Navigation vers la vue "ajouter une photo"
+    addPhotoButton.addEventListener("click", (e) => {
+        viewGallery.hidden = true;
+        viewAddPhoto.hidden = false;
+        backButton.hidden = false;
+    })
+
+    // Retour vers la vue galerie
+    backButton.addEventListener("click", (e) => {
+        viewGallery.hidden = false;
+        viewAddPhoto.hidden = true;
+        backButton.hidden = true;
+    })
+
+    setupModaleDelete();
+}
+
+// Affichage
 const projects = await fetchProjects();
 const categories = await fetchCategories();
 
+const token = localStorage.getItem("token");
+
 allProjects = projects;
-renderFilters(categories);
+allCategories = categories;
 renderGallery(allProjects);
+
+if (token) {
+    // Affichage connecté : Préparation de la modale et layout connecté
+    console.log("token OK")
+    applyLoggedInLayout();
+    setupModale();
+} else {
+    // Non connecté
+    renderFilters(allCategories);
+}
