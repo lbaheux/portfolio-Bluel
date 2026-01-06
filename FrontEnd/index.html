@@ -12,7 +12,7 @@
         integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="./assets/style.css">
-	<script type = "module" src="./assets/main.js"></script>
+	<script type="module" src="./assets/main.js"></script>
 </head>
 <body>
 <header>
@@ -102,11 +102,14 @@
 
 			<form class="modale-form">
 				<div class="upload-box">
-					<div class="upload-icon">
+					<img id="upload-preview" class="upload-preview" alt="Aperçu" hidden>
+					<div class="upload-icon" id="upload-placeholder">
 						<i class="fa-regular fa-image"></i>
 					</div>
 
-					<button type="button" class="button-upload" disabled>+ Ajouter photo</button>
+					<input type="file" id="project-image" hidden>
+
+					<button type="button" class="button-upload" id="button-choose-image">+ Ajouter photo</button>
 					<p class="upload-info">jpg, png : 4mo max</p>
 				</div>
 
@@ -115,13 +118,12 @@
 
 				<label for="project-category">Catégorie</label>
 				<select id="project-category">
-					<option value="">-</option>
 				</select>
 
 				<div class="modale-separator"></div>
-
-				<button type="submit" class="main-button" disabled>Valider</button>
+				<button type="submit" class="main-button" id="modale-submit-button">Valider</button>
 			</form>
+		<p class="form-error" hidden>Tous les champs sont obligatoires</p>
 		</section>
 	</div>
 </aside>

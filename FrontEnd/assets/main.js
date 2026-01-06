@@ -195,9 +195,11 @@ function setupModaleDelete() {
     const grid = document.querySelector(".modale-gallery");
 
     grid.addEventListener("click", async function (e) {
-        if (!e.target.classList.contains("fa-trash-can") && !e.target.classList.contains("thumb-trash")){
-            return;
-        }
+        const trashButton = e.target.closest(".thumb-trash");
+        if (!trashButton) return;
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
         
         let deleteButton;
         if (e.target.classList.contains("thumb-trash")) {
@@ -214,7 +216,7 @@ function setupModaleDelete() {
         await deleteProject(projectId);
 
         // Suppression dans le tableau
-        for (let i = 0; i <allProjects.length; i++) {
+        for (let i = 0; i < allProjects.length; i++) {
             if (allProjects[i].id == projectId) {
                 allProjects.splice(i, 1);
                 break;
@@ -226,6 +228,105 @@ function setupModaleDelete() {
     });
 }
 
+// Ajout de projet
+async function createProject(formData) {
+    const token = localStorage.getItem("token");
+
+    const reponse = await fetch("http://localhost:5678/api/works", {
+        method: "POST", 
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        body: formData
+    });
+    
+    return reponse.json();
+}
+
+function setupModaleAddProject() {
+    const form = document.querySelector(".modale-form");
+    const fileInput = document.querySelector("#project-image");
+    const pickButton = document.querySelector("#button-choose-image");
+    const previewImg = document.querySelector("#upload-preview");
+    const placeholder = document.querySelector("#upload-placeholder");
+    const titleInput = document.querySelector("#project-title");
+    const categorySelect = document.querySelector("#project-category");
+    const submitButton = document.querySelector("#modale-submit-button");
+    const errorMsg = document.querySelector(".form-error");
+
+    // Ouvre le sélecteur de fichier
+    pickButton.addEventListener("click", function () {
+        errorMsg.hidden = true;
+        fileInput.click();
+    });
+
+    // Preview image
+    fileInput.addEventListener("change", function () {
+        errorMsg.hidden = true;
+
+        if (!fileInput.files || fileInput.files.length == 0) {
+            previewImg.hidden = true;
+            placeholder.hidden = false;
+            return;
+        }
+
+        const file = fileInput.files[0];
+        previewImg.src = URL.createObjectURL(file);
+
+        previewImg.hidden = false;
+        placeholder.hidden = true;
+        pickButton.hidden = true;
+    });
+
+    titleInput.addEventListener("input", function () {
+        errorMsg.hidden = true;
+    });
+
+    categorySelect.addEventListener("change", function () {
+        errorMsg.hidden = true;
+    });
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        errorMsg.hidden = true;
+
+        const file = fileInput.files[0];
+        const title = titleInput.value;
+        const categoryId = categorySelect.value;
+
+        if (!file || !title || !categoryId) {
+            errorMsg.hidden = false;
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("image", file);
+        formData.append("title", title);
+        formData.append("category", categoryId);
+
+        const data = await createProject(formData);
+
+        allProjects.unshift(data);
+        renderGallery(allProjects);
+        renderModaleGallery(allProjects);
+
+        form.reset();
+        previewImg.hidden = true;
+        previewImg.src = "";
+        placeholder.hidden = false;
+
+        // Retour à la vue galerie
+        const viewGallery = document.querySelector("#modale-view-gallery");
+        const viewAddPhoto = document.querySelector("#modale-view-add-photo");
+        const backButton = document.querySelector(".modale-back");
+
+        viewGallery.hidden = false;
+        viewAddPhoto.hidden = true;
+        backButton.hidden = true;
+    });
+}
+
+// Fonction modale principale
 function setupModale() {
     const token = localStorage.getItem("token");
 
@@ -276,6 +377,7 @@ function setupModale() {
     })
 
     setupModaleDelete();
+    setupModaleAddProject();
 }
 
 // Affichage

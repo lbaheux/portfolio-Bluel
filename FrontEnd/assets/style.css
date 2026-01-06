@@ -441,6 +441,17 @@ header img {
 	align-items: center;
 	gap: 8px;
 	margin: 10px 0 20px;
+
+	position: relative;
+	overflow: hidden;
+}
+
+.upload-preview {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
 }
 
 .upload-icon {
@@ -536,11 +547,13 @@ header img {
   font-weight: 700;
 }
 
-.modale-form .main-button:disabled {
-  background: #a7a7a7;
-  cursor: not-allowed;
-}
+.form-error {
+	color:rgb(228, 15, 15);
+	font-size: 14px;
+	margin-top: 10px;
+	text-align: center;
 
+}
 [hidden] {
 	display: none;
 }
